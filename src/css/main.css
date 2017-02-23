@@ -1,0 +1,82 @@
+html, body {
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#renderCanvas {
+	width: 100%;
+	height: 100%;
+	touch-action: none;
+}
+
+.arrows {
+	position: absolute;
+	top: 50px;
+	left: 50px;
+	height: 150px;
+	width: 150px;
+
+	border-radius: 50%;
+	background: rgba(50,50,50, 0.3);
+
+	-webkit-animation: fadeIn 1s ease-out;
+	-o-animation: fadeIn 1s ease-out;
+	animation: fadeIn 1s ease-out;
+}
+
+.arrow {
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	border-bottom: 40px solid rgba(100,50,50,0.5);
+}
+
+.arrow.vertical{  left: 54px;  }
+.arrow.horizontal{  top: 53px;  }
+
+.arrow#top {  top: 3px;  }
+.arrow#right {
+	left: 103px;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
+.arrow#bottom {
+	top: 106px;
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+.arrow#left {
+	left: 7px;
+	-webkit-transform: rotate(270deg);
+	-moz-transform: rotate(270deg);
+	-ms-transform: rotate(270deg);
+	-o-transform: rotate(270deg);
+	transform: rotate(270deg);
+}
+
+.highlighted {  border-bottom: 40px solid rgba(100,50,50, 1);  }
+
+#timer {
+	position: absolute;
+	top: 50px;
+	right: 50px;
+
+	font-size: 20px;
+	font-family: Arial;
+	color: rgb(200,100,100);
+
+	-webkit-animation: fadeIn 1s ease-out;
+	-o-animation: fadeIn 1s ease-out;
+	animation: fadeIn 1s ease-out;
+}
