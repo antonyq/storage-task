@@ -2,19 +2,19 @@ var canvas, engine;
 
 function createScene () {
     var storage = new Storage();
-    
+
     var scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color3.FromInts(0, 0, 0);
-    
+
     var camera = new GL_Camera(scene);
     var light = new GL_Light(scene, 0.7);
 
     var container = new GL_Box(scene,
         {x: 0, y: 0, z: 0},
-        {w: 10, h: 10, d: 20}, 
+        {w: 10, h: 10, d: 20},
         {R: 10, G: 0, B: 10, A: 0.5}
     );
-    
+
     // for (var box in storage.boxes){
     //     new Box(scene,
     //         box.position,
@@ -23,18 +23,8 @@ function createScene () {
     //     );
     // }
 
-    var alpha = 1,
-        box = new GL_Box(scene, {
-            x: -10,
-            y: -10,
-            z: 0
-        }, {
-            h: 3,
-            w: 3,
-            d: 3
-        }, "metal/3.jpg");
-
     scene.registerBeforeRender(() => {
+        // storage update
         if (box.position.x < 0 &&
             box.position.y < 0) {
             box.position.x += 0.1;
@@ -57,7 +47,7 @@ function GL_Camera (scene) {
 
 function GL_Light (scene, intensity) {
     this.light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    
+
     this.light.intensity = intensity;
     return this.light;
 }
