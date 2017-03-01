@@ -7,9 +7,13 @@ window.onload = () => {
 	canvas = document.getElementById("renderCanvas");
 	engine = new BABYLON.Engine(canvas, true);
 
-	var scene = createScene(engine, canvas);
+	var scene = createScene();
 
-	var timer = setInterval(function ( ) {
+	engine.runRenderLoop(() => {
+		scene.render();
+	});
+
+	var timer = setInterval(function () {
 		var deltaDate = new Date((new Date()) - START_TIME);
 		$TIMER.html(deltaDate.getMinutes() + ":" + deltaDate.getSeconds() + ":" + deltaDate.getMilliseconds());
 	}, 1);
@@ -21,6 +25,7 @@ function initEventListeners () {
 	window.addEventListener("resize", () => {
 		engine.resize();
 	});
+
 	document.onkeydown = function () {
 		switch (window.event.keyCode) {
 			case 37:
@@ -37,6 +42,7 @@ function initEventListeners () {
 				break;
 		}
 	};
+
 	document.onkeyup = function () {
 		switch (window.event.keyCode) {
 			case 37:
