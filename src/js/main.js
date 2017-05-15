@@ -1,9 +1,7 @@
-var START_TIME,
-	$TIMER;
+var BOXES_COUNT = parseInt(prompt('Box count: ', '5')),
+	canvas, engine;
 
 window.onload = () => {
-	START_TIME = new Date();
-	$TIMER = $("#timer");
 	canvas = document.getElementById("renderCanvas");
 	engine = new BABYLON.Engine(canvas, true);
 
@@ -12,11 +10,6 @@ window.onload = () => {
 	engine.runRenderLoop(() => {
 		scene.render();
 	});
-
-	var timer = setInterval(function () {
-		var deltaDate = new Date((new Date()) - START_TIME);
-		$TIMER.html(deltaDate.getMinutes() + ":" + deltaDate.getSeconds() + ":" + deltaDate.getMilliseconds());
-	}, 1);
 
 	initEventListeners();
 };

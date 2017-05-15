@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "main": "server.js",
   "scripts": {
-      "start": "node server.js"
+    "start": "node server.js",
+    "test": "nodemon server.js"
   },
   "dependencies": {
     "express": "4.14.1",
@@ -12,5 +13,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/antonyq/storage-task"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
