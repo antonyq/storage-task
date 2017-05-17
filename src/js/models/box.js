@@ -23,8 +23,8 @@ class Box {
         this.stored = false;
         this.volume = options.w * options.h * options.d;
 
-        this.anglePoints = [
-            new Sphere ({
+        this.angles = [
+            new Angle ({
                 scene: this.scene,
                 x: this.model.position.x - this.model.scaling.x / 2,
                 y: this.model.position.y - this.model.scaling.y / 2,
@@ -32,7 +32,7 @@ class Box {
                 w: 0.1,
                 h: 0.1,
                 d: 0.1
-            }), new Sphere ({
+            }), new Angle ({
                 scene: this.scene,
                 x: this.model.position.x + this.model.scaling.x / 2,
                 y: this.model.position.y - this.model.scaling.y / 2,
@@ -40,7 +40,7 @@ class Box {
                 w: 0.1,
                 h: 0.1,
                 d: 0.1
-            }), new Sphere ({
+            }), new Angle ({
                 scene: this.scene,
                 x: this.model.position.x - this.model.scaling.x / 2,
                 y: this.model.position.y + this.model.scaling.y / 2,
@@ -48,7 +48,7 @@ class Box {
                 w: 0.1,
                 h: 0.1,
                 d: 0.1
-            }), new Sphere ({
+            }), new Angle ({
                 scene: this.scene,
                 x: this.model.position.x - this.model.scaling.x / 2,
                 y: this.model.position.y - this.model.scaling.y / 2,
@@ -56,7 +56,7 @@ class Box {
                 w: 0.1,
                 h: 0.1,
                 d: 0.1
-            }), new Sphere ({
+            }), new Angle ({
                 scene: this.scene,
                 x: this.model.position.x + this.model.scaling.x / 2,
                 y: this.model.position.y + this.model.scaling.y / 2,
@@ -64,7 +64,7 @@ class Box {
                 w: 0.1,
                 h: 0.1,
                 d: 0.1
-            }), new Sphere ({
+            }), new Angle ({
                 scene: this.scene,
                 x: this.model.position.x - this.model.scaling.x / 2,
                 y: this.model.position.y + this.model.scaling.y / 2,
@@ -72,7 +72,7 @@ class Box {
                 w: 0.1,
                 h: 0.1,
                 d: 0.1
-            }), new Sphere ({
+            }), new Angle ({
                 scene: this.scene,
                 x: this.model.position.x + this.model.scaling.x / 2,
                 y: this.model.position.y - this.model.scaling.y / 2,
@@ -80,7 +80,7 @@ class Box {
                 w: 0.1,
                 h: 0.1,
                 d: 0.1
-            }), new Sphere ({
+            }), new Angle ({
                 scene: this.scene,
                 x: this.model.position.x + this.model.scaling.x / 2,
                 y: this.model.position.y + this.model.scaling.y / 2,
@@ -92,16 +92,16 @@ class Box {
         ];
     }
 
-    move (targetPoint, eps, delta) {
+    move (targetPoint, eps=0.01, delta) {
         if (delta) {
             var diffPoint = {};
 
             for (var axis in targetPoint) {
-                if (Math.abs(this.anglePoints[0].model.position[axis] - targetPoint[axis]) > eps) {
-                    var sign = (this.anglePoints[0].model.position[axis] < targetPoint[axis]) ? 1 : (-1);
+                if (Math.abs(this.angles[0].model.position[axis] - targetPoint[axis]) > eps) {
+                    var sign = (this.angles[0].model.position[axis] < targetPoint[axis]) ? 1 : (-1);
                     diffPoint[axis] = this.model.position[axis] + sign*delta;
-                    for (var i in this.anglePoints) {
-                        this.anglePoints[i].model.position[axis] += sign*delta;
+                    for (var i in this.angles) {
+                        this.angles[i].model.position[axis] += sign*delta;
                     }
                 } else {
                     diffPoint[axis] = this.model.position[axis];

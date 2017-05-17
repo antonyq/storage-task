@@ -1,4 +1,4 @@
-class Sphere {
+class Angle {
     constructor (options) {
         this.model = BABYLON.Mesh.CreateSphere('sphere', 16, 2, options.scene);
 

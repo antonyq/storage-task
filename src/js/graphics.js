@@ -24,27 +24,23 @@ function createScene () {
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-    var storageCoords = storage.anglePoints[0].model.position,
-        delta = 0.1, eps = 0.01;
+    var delta = 0.1, eps = 0.01;
 
     scene.registerBeforeRender(() => {
         storage.boxes.every((box, index) => {
             if (!box.stored) {
-                var targetCoords = {
-                    x: (index != 0) ? storage.boxes[index-1].anglePoints[7].model.position.x : storageCoords.x,
-                    y: (index != 0) ? storage.boxes[index-1].anglePoints[7].model.position.y : storageCoords.y,
-                    z: (index != 0) ? storage.boxes[index-1].anglePoints[7].model.position.z : storageCoords.z
-                }
-
-                if (Math.sqrt(
-                       (box.anglePoints[0].model.position.x - targetCoords.x)**2 +
-                       (box.anglePoints[0].model.position.y - targetCoords.y)**2 +
-                       (box.anglePoints[0].model.position.z - targetCoords.z)**2
-                   ) > delta) {
-                    box.move(targetCoords, eps, delta);
-                    return false;
-                } else {
-                    box.stored = true;
+                var targetCoords = storage.getNextPoint();
+                if (targetCoords) {
+                    if (Math.sqrt(
+                           (box.angles[0].model.position.x - targetCoords.x)**2 +
+                           (box.angles[0].model.position.y - targetCoords.y)**2 +
+                           (box.angles[0].model.position.z - targetCoords.z)**2
+                       ) > delta) {
+                           box.move(targetCoords, eps, delta);
+                        return false;
+                    } else {
+                        box.stored = true;
+                    }
                 }
             } else return true;
         });
