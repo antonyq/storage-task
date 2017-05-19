@@ -8,6 +8,8 @@ class Box {
         this.model.position = new BABYLON.Vector3(options.x, options.y, options.z);
         this.model.scaling = new BABYLON.Vector3(options.w, options.h, options.d);
 
+        this.model.showBoundingBox = options.showBoundingBox;
+
         var materialBox = new BABYLON.StandardMaterial("texture", options.scene);
         if (options.texture) {
             materialBox.diffuseTexture = new BABYLON.Texture("../../img/textures/" + options.texture, options.scene);
@@ -22,6 +24,28 @@ class Box {
 
         this.stored = false;
         this.volume = options.w * options.h * options.d;
+
+        // generate angles
+        [
+            [-1,-1,-1],
+            [ 1,-1,-1], [-1, 1,-1], [-1,-1, 1],
+            [ 1, 1,-1], [-1, 1, 1], [ 1,-1, 1],
+            [ 1, 1, 1]
+        ].forEach((angleMatrix, index) => {
+            if (index) {
+                this.angles.push(new Angle ({
+                    scene: this.scene,
+                    x: this.model.position.x + angleMatrix * this.model.scaling.x / 2,
+                    y: this.model.position.y + angleMatrix * this.model.scaling.y / 2,
+                    z: this.model.position.z + angleMatrix * this.model.scaling.z / 2,
+                    w: 0.1,
+                    h: 0.1,
+                    d: 0.1
+                }));
+            } else {
+                this.angles = [];
+            }
+        });
 
         this.angles = [
             new Angle ({
@@ -92,33 +116,16 @@ class Box {
         ];
     }
 
-    move (targetPoint, eps=0.01, delta) {
-        if (delta) {
-            var diffPoint = {};
+    move (targetPoint, delta) {
+        delta = delta || 1;
 
-            for (var axis in targetPoint) {
-                if (Math.abs(this.angles[0].model.position[axis] - targetPoint[axis]) > eps) {
-                    var sign = (this.angles[0].model.position[axis] < targetPoint[axis]) ? 1 : (-1);
-                    diffPoint[axis] = this.model.position[axis] + sign*delta;
-                    for (var i in this.angles) {
-                        this.angles[i].model.position[axis] += sign*delta;
-                    }
-                } else {
-                    diffPoint[axis] = this.model.position[axis];
-                }
+        for (var axis in targetPoint) {
+            var diff = this.angles[0].model.position[axis] - targetPoint[axis];
+            this.model.position[axis] -= delta * diff;
+            for (var i in this.angles) {
+                this.angles[i].model.position[axis] -= delta * diff;
             }
 
-            this.model.position = new BABYLON.Vector3(diffPoint.x, diffPoint.y, diffPoint.z);
         }
     }
-
-    rotate (x, y, z) {
-        this.model.rotation = new BABYLON.Vector3(x, y, z);
-    }
-
-    // check if target box placed in THIS box
-    isBoxPlaced (box) {
-
-    };
-
 }

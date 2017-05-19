@@ -68,6 +68,20 @@ html, body {
 
 .highlighted {  border-bottom: 40px solid rgba(100,50,50, 1);  }
 
+.stats {
+	position: absolute;
+	top: 30px;
+	right: 20px;
+}
+
+.stats tr {
+	color: rgba(100,50,50, 1);
+}
+
+.stats tr:not(:last-child) {
+	border-bottom: 1px solid rgba(100,50,50,0.5);
+}
+
 
 /* ANIMATIONS */
 

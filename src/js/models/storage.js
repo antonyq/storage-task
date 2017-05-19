@@ -13,6 +13,14 @@ class Storage extends Box {
         return boxVolumes.reduce((prev, curr) => prev + curr, 0) / this.volume;
     }
 
+    getStoredBoxesCount () {
+        var counter = 0;
+        this.boxes.forEach((box) => {
+            if (box.stored) counter++;
+        });
+        return counter;
+    }
+
     // get available volume 0.X format
     getAvailableVolume () {
         return 1 - this.getStoredVolume();
@@ -32,14 +40,12 @@ class Storage extends Box {
     }
 
     getNextPoint () {
-
         for (var [index, box] of this.boxes.entries()) {
             if (box.stored) {
             } else {
                 var xMostPoint = index ? this.boxes[index-1].angles[1].model.position : this.angles[0].model.position,
                     yMostPoint = index ? this.boxes[index-1].angles[2].model.position : this.angles[0].model.position,
                     zMostPoint = index ? this.boxes[index-1].angles[3].model.position : this.angles[0].model.position;
-                // add filtering by other axis
                 if (xMostPoint.x + box.model.scaling.x < this.angles[1].model.position.x &&
                     xMostPoint.y + box.model.scaling.y < this.angles[2].model.position.y &&
                     xMostPoint.z + box.model.scaling.z < this.angles[3].model.position.z) {
