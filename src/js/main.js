@@ -1,4 +1,4 @@
-var BOXES_COUNT = parseInt(prompt('Box count: ', '5')),
+var BOXES_COUNT = parseInt(prompt('Box count: ', '35')),
 	canvas, engine;
 
 window.onload = () => {

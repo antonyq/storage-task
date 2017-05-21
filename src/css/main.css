@@ -1,3 +1,13 @@
+@font-face {
+    font-family: Roboto-Regular;
+    src: url(../fonts/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: Roboto-Condensed-Bold;
+    src: url(../fonts/RobotoCondensed-Bold.ttf);
+}
+
 html, body {
 	overflow: hidden;
 	width: 100%;
@@ -75,6 +85,8 @@ html, body {
 }
 
 .stats tr {
+	font-size: 20px;
+    font-family: Roboto-Regular;
 	color: rgba(100,50,50, 1);
 }
 

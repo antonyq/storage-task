@@ -43,36 +43,49 @@ class Storage extends Box {
         for (var [index, box] of this.boxes.entries()) {
             if (box.stored) {
             } else {
-                var xMostPoint = index ? this.boxes[index-1].angles[1].model.position : this.angles[0].model.position,
-                    yMostPoint = index ? this.boxes[index-1].angles[2].model.position : this.angles[0].model.position,
-                    zMostPoint = index ? this.boxes[index-1].angles[3].model.position : this.angles[0].model.position;
+                let xMostPoint = index ? this.boxes[index-1].angles[1].model.position : this.angles[0].model.position,
+                    yMostPoint = this.getLastDirectiveYBox().angles[2].model.position,
+                    zMostPoint = this.getLastDirectiveXBox().angles[3].model.position;
+
                 if (xMostPoint.x + box.model.scaling.x < this.angles[1].model.position.x &&
                     xMostPoint.y + box.model.scaling.y < this.angles[2].model.position.y &&
                     xMostPoint.z + box.model.scaling.z < this.angles[3].model.position.z) {
                     return xMostPoint;
-                } else if (yMostPoint.x + box.model.scaling.x < this.angles[1].model.position.x &&
-                           yMostPoint.y + box.model.scaling.y < this.angles[2].model.position.y &&
-                           yMostPoint.z + box.model.scaling.z < this.angles[3].model.position.z) {
-                    return yMostPoint;
                 } else if (zMostPoint.x + box.model.scaling.x < this.angles[1].model.position.x &&
                            zMostPoint.y + box.model.scaling.y < this.angles[2].model.position.y &&
                            zMostPoint.z + box.model.scaling.z < this.angles[3].model.position.z) {
+                    box.directiveX = false;
                     return zMostPoint;
-                } else {
-                    console.log('Next point undefined');
+                } else if (yMostPoint.x + box.model.scaling.x < this.angles[1].model.position.x &&
+                           yMostPoint.y + box.model.scaling.y < this.angles[2].model.position.y &&
+                           yMostPoint.z + box.model.scaling.z < this.angles[3].model.position.z) {
+                    box.directiveX = false;
+                    box.directiveY = false;
+                    return yMostPoint;
                 }
             };
         }
     }
 
-    getMostPoint (axis) {
-        var point = this.angles[0].model.position;
-
-
+    getLastDirectiveXBox () {
+        var targetBox;
+        for (var [index, box] of this.boxes.entries()) {
+            if (box.directiveX) targetBox = box;
+        }
+        return targetBox;
     }
 
-    getDeepMostPoint () {}
-    getTopMostPoint () {}
+    getLastDirectiveYBox () {
+        var targetBox;
+        for (var [index, box] of this.boxes.entries()) {
+            if (box.directiveY) targetBox = box;
+        }
+        return targetBox;
+    }
+
+    // getMostActualBox () {
+    //
+    // }
 
     generateBox (options) {
         return new Box ({
@@ -90,7 +103,7 @@ class Storage extends Box {
     generateBoxes (count) {
         var boxes = [];
         for (var i = 0; i < count; i++) {
-            boxes.push(this.generateBox());
+            boxes.push(this.generateBox({x:0, y:15, z:0, h:6, w:6, d:6}));
         }
         this.boxes = boxes.sort((a, b) => (a.volume < b. volume) ? 1 : -1);
     }

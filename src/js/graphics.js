@@ -17,6 +17,10 @@ function createScene () {
         boxCount: BOXES_COUNT
     });
 
+    storage.boxes[0].directiveX = true;
+    storage.boxes[0].directiveY = true;
+
+
 
     var camera = new BABYLON.ArcRotateCamera("Camera", -2, 1.2, 50, new BABYLON.Vector3.Zero(), scene);
     camera.attachControl(canvas, false);
@@ -24,7 +28,7 @@ function createScene () {
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-    var delta = 0.1, eps = 0.001;
+    var delta = 0.25, eps = 0.001;
 
     setStats();
 
@@ -42,8 +46,12 @@ function createScene () {
                         return false;
                     } else {
                         box.stored = true;
-                        if (index == 0 && true) {
-                            box.directive = true;
+                        if (typeof box.directiveX == 'boolean') {
+                            box.directiveX = true;
+                        }
+                        if (typeof box.directiveY == 'boolean') {
+                            box.directiveX = true;
+                            box.directiveY = true;
                         }
                         setStats();
                     }
@@ -51,7 +59,7 @@ function createScene () {
             } else return true;
         });
 
-        // camera.alpha += 0.001;
+        camera.alpha += 0.001;
     });
 
     return scene;
