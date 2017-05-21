@@ -70,6 +70,7 @@ class Storage extends Box {
 
 
     }
+
     getDeepMostPoint () {}
     getTopMostPoint () {}
 

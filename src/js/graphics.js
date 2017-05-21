@@ -42,6 +42,9 @@ function createScene () {
                         return false;
                     } else {
                         box.stored = true;
+                        if (index == 0 && true) {
+                            box.directive = true;
+                        }
                         setStats();
                     }
                 }
@@ -56,5 +59,5 @@ function createScene () {
 
 function setStats () {
     $('.stored-containers-count').html(`${storage.getStoredBoxesCount()}/${storage.boxes.length}`);
-    $('.filled-volume').html(`${storage.getStoredVolume().toPrecision(2) * 100}%`);
+    $('.filled-volume').html(`${parseInt(storage.getStoredVolume() * 100)}%`);
 }
