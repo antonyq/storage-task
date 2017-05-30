@@ -1,7 +1,6 @@
 class Storage extends Box {
     constructor (options) {
         super(options);
-        delete this.stored;
         this.boxes = [];
         this.scene = options.scene;
         this.generateBoxes(options.boxCount);
@@ -13,6 +12,11 @@ class Storage extends Box {
         return boxVolumes.reduce((prev, curr) => prev + curr, 0) / this.volume;
     }
 
+    // get available volume 0.X format
+    getAvailableVolume () {
+        return 1 - this.getStoredVolume();
+    }
+
     getStoredBoxesCount () {
         var counter = 0;
         this.boxes.forEach((box) => {
@@ -21,44 +25,19 @@ class Storage extends Box {
         return counter;
     }
 
-    // get available volume 0.X format
-    getAvailableVolume () {
-        return 1 - this.getStoredVolume();
-    }
-
-    getAvailableAreas () {
-        this.areas = [];
-        this.boxes.forEach((box) => {
-            // generate areas
-        });
-
-        // show areas
-        this.areas.forEach((area) => {
-
-        });
-        return this.areas;
-    }
-
     getNextPoint () {
         for (var [index, box] of this.boxes.entries()) {
-            if (box.stored) {
-            } else {
+            if (! box.stored) {
                 let xMostPoint = index ? this.boxes[index-1].angles[1].model.position : this.angles[0].model.position,
                     yMostPoint = this.getLastDirectiveYBox().angles[2].model.position,
                     zMostPoint = this.getLastDirectiveXBox().angles[3].model.position;
 
-                if (xMostPoint.x + box.model.scaling.x < this.angles[1].model.position.x &&
-                    xMostPoint.y + box.model.scaling.y < this.angles[2].model.position.y &&
-                    xMostPoint.z + box.model.scaling.z < this.angles[3].model.position.z) {
+                if (box.isPlacedInPoint(xMostPoint, this)) {
                     return xMostPoint;
-                } else if (zMostPoint.x + box.model.scaling.x < this.angles[1].model.position.x &&
-                           zMostPoint.y + box.model.scaling.y < this.angles[2].model.position.y &&
-                           zMostPoint.z + box.model.scaling.z < this.angles[3].model.position.z) {
+                } else if (box.isPlacedInPoint(zMostPoint, this)) {
                     box.directiveX = false;
                     return zMostPoint;
-                } else if (yMostPoint.x + box.model.scaling.x < this.angles[1].model.position.x &&
-                           yMostPoint.y + box.model.scaling.y < this.angles[2].model.position.y &&
-                           yMostPoint.z + box.model.scaling.z < this.angles[3].model.position.z) {
+                } else if (box.isPlacedInPoint(yMostPoint, this)) {
                     box.directiveX = false;
                     box.directiveY = false;
                     return yMostPoint;
@@ -68,23 +47,17 @@ class Storage extends Box {
     }
 
     getLastDirectiveXBox () {
-        var targetBox;
-        for (var [index, box] of this.boxes.entries()) {
-            if (box.directiveX) targetBox = box;
-        }
-        return targetBox;
+        var directiveXBoxes = this.boxes.filter((box) => box.directiveX);
+        return directiveXBoxes[directiveXBoxes.length-1];
     }
 
     getLastDirectiveYBox () {
-        var targetBox;
-        for (var [index, box] of this.boxes.entries()) {
-            if (box.directiveY) targetBox = box;
-        }
-        return targetBox;
+        var directiveYBoxes = this.boxes.filter((box) => box.directiveY);
+        return directiveYBoxes[directiveYBoxes.length-1];
     }
 
-    // getMostActualBox () {
-    //
+    // getMostActualBox (point) {
+    // if (moreActual exists) swap
     // }
 
     generateBox (options) {
@@ -103,7 +76,7 @@ class Storage extends Box {
     generateBoxes (count) {
         var boxes = [];
         for (var i = 0; i < count; i++) {
-            boxes.push(this.generateBox({x:0, y:15, z:0, h:6, w:6, d:6}));
+            boxes.push(this.generateBox(/*{x:0, y:15, z:0, h:6, w:6, d:6}*/));
         }
         this.boxes = boxes.sort((a, b) => (a.volume < b. volume) ? 1 : -1);
     }
