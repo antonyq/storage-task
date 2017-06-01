@@ -2,7 +2,7 @@ class Storage extends Box {
     constructor (options) {
         super(options);
         this.boxes = [];
-        this.emptyAngles = [];
+        this.corners = [];
         this.scene = options.scene;
         this.generateBoxes(options.boxCount);
     }

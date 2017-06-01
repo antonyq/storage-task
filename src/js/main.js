@@ -55,3 +55,8 @@ function initEventListeners () {
 		}
 	}
 };
+
+function updateStats (storage) {
+	$('.stored-containers-count').html(`${storage.getStoredBoxesCount()}/${storage.boxes.length}`);
+    $('.filled-volume').html(`${parseInt(storage.getStoredVolume() * 100)}%`);
+}
