@@ -2,42 +2,56 @@ class Storage extends Box {
     constructor (options) {
         super(options);
         this.boxes = [];
+        this.emptyAngles = [];
         this.scene = options.scene;
         this.generateBoxes(options.boxCount);
     }
 
-    // get stored volume in 0.X format
+
     getStoredVolume () {
-        var boxVolumes = this.boxes.map((box) => (box.stored) ? box.volume : 0);
+        let boxVolumes = this.boxes.map((box) => (box.stored) ? box.volume : 0);
         return boxVolumes.reduce((prev, curr) => prev + curr, 0) / this.volume;
     }
 
-    // get available volume 0.X format
     getAvailableVolume () {
         return 1 - this.getStoredVolume();
     }
 
+    getStoredBoxes () {
+        return this.boxes.filter(box => box.stored);
+    }
+
     getStoredBoxesCount () {
-        var counter = 0;
-        this.boxes.forEach((box) => {
-            if (box.stored) counter++;
+        return this.getStoredBoxes().length;
+    }
+
+    getMostCoord (axis) {
+        let axisAngleMap = {'x': 1, 'y': 2, 'z': 3},
+            mostPoint = this.angles[0].model.position,
+            storedBoxes = this.boxes.filter(box => box.stored);
+
+        storedBoxes.forEach((box) => {
+            if (box.angles[axisAngleMap[axis]].model.position[axis] > mostPoint[axis]) {
+                mostPoint = box.angles[axisAngleMap[axis]].model.position;
+            }
         });
-        return counter;
+
+        return mostPoint.position[axis];
     }
 
     getNextPoint () {
-        for (var [index, box] of this.boxes.entries()) {
+        for (let [index, box] of this.boxes.entries()) {
             if (! box.stored) {
-                let xMostPoint = index ? this.boxes[index-1].angles[1].model.position : this.angles[0].model.position,
-                    yMostPoint = this.getLastDirectiveYBox().angles[2].model.position,
-                    zMostPoint = this.getLastDirectiveXBox().angles[3].model.position;
+                let xMostPoint = this.getMostPoint('x'), //index ? this.boxes[index-1].angles[1].model.position : this.angles[0].model.position,
+                    yMostPoint = this.getMostPoint('y'), //this.getLastDirectiveYBox().angles[2].model.position,
+                    zMostPoint = this.getMostPoint('z'); //this.getLastDirectiveXBox().angles[3].model.position;
 
-                if (box.isPlacedInPoint(xMostPoint, this)) {
+                if (box.placedInPoint(xMostPoint, this)) {
                     return xMostPoint;
-                } else if (box.isPlacedInPoint(zMostPoint, this)) {
+                } else if (box.placedInPoint(zMostPoint, this)) {
                     box.directiveX = false;
                     return zMostPoint;
-                } else if (box.isPlacedInPoint(yMostPoint, this)) {
+                } else if (box.placedInPoint(yMostPoint, this)) {
                     box.directiveX = false;
                     box.directiveY = false;
                     return yMostPoint;
@@ -46,19 +60,19 @@ class Storage extends Box {
         }
     }
 
+    getNextPoints () {
+
+    }
+
     getLastDirectiveXBox () {
-        var directiveXBoxes = this.boxes.filter((box) => box.directiveX);
+        let directiveXBoxes = this.boxes.filter((box) => box.directiveX);
         return directiveXBoxes[directiveXBoxes.length-1];
     }
 
     getLastDirectiveYBox () {
-        var directiveYBoxes = this.boxes.filter((box) => box.directiveY);
+        let directiveYBoxes = this.boxes.filter((box) => box.directiveY);
         return directiveYBoxes[directiveYBoxes.length-1];
     }
-
-    // getMostActualBox (point) {
-    // if (moreActual exists) swap
-    // }
 
     generateBox (options) {
         return new Box ({
@@ -74,10 +88,10 @@ class Storage extends Box {
     }
 
     generateBoxes (count) {
-        var boxes = [];
-        for (var i = 0; i < count; i++) {
-            boxes.push(this.generateBox(/*{x:0, y:15, z:0, h:6, w:6, d:6}*/));
+        for (let i = 0; i < count; i++) {
+            this.boxes.push(this.generateBox(/*{x:0, y:15, z:0, h:6, w:6, d:6}*/));
         }
-        this.boxes = boxes.sort((a, b) => (a.volume < b. volume) ? 1 : -1);
+
+        this.boxes = this.boxes.sort((a, b) => (a.volume < b. volume) ? 1 : -1);
     }
 }

@@ -8,7 +8,7 @@ class Box {
         this.model.position = new BABYLON.Vector3(options.x, options.y, options.z);
         this.model.scaling = new BABYLON.Vector3(options.w, options.h, options.d);
 
-        var materialBox = new BABYLON.StandardMaterial("texture", options.scene);
+        let materialBox = new BABYLON.StandardMaterial("texture", options.scene);
         if (options.texture) {
             materialBox.diffuseTexture = new BABYLON.Texture("../../img/textures/" + options.texture, options.scene);
             materialBox.diffuseTexture.hasAlpha = true;
@@ -20,114 +20,46 @@ class Box {
         this.model.material = materialBox;
 
 
+        this.angles = [];
         this.stored = false;
         this.volume = options.w * options.h * options.d;
 
         // generate angles
         [
             [-1,-1,-1],
-            [ 1,-1,-1], [-1, 1,-1], [-1,-1, 1],
-            [ 1, 1,-1], [-1, 1, 1], [ 1,-1, 1],
+            [ 1,-1,-1],
+            [-1, 1,-1],
+            [-1,-1, 1],
+            [ 1, 1,-1],
+            [ 1,-1, 1],
+            [-1, 1, 1],
             [ 1, 1, 1]
-        ].forEach((angleMatrix, index) => {
-            if (index) {
-                this.angles.push(new Angle ({
-                    scene: this.scene,
-                    x: this.model.position.x + angleMatrix * this.model.scaling.x / 2,
-                    y: this.model.position.y + angleMatrix * this.model.scaling.y / 2,
-                    z: this.model.position.z + angleMatrix * this.model.scaling.z / 2,
-                    w: 0.1,
-                    h: 0.1,
-                    d: 0.1
-                }));
-            } else {
-                this.angles = [];
-            }
+        ].forEach((angleVector) => {
+            this.angles.push(new Angle ({
+                scene: this.scene,
+                x: this.model.position.x + angleVector[0] * this.model.scaling.x / 2,
+                y: this.model.position.y + angleVector[1] * this.model.scaling.y / 2,
+                z: this.model.position.z + angleVector[2] * this.model.scaling.z / 2,
+                w: 0.1,
+                h: 0.1,
+                d: 0.1
+            }));
         });
 
-        this.angles = [
-            new Angle ({
-                scene: this.scene,
-                x: this.model.position.x - this.model.scaling.x / 2,
-                y: this.model.position.y - this.model.scaling.y / 2,
-                z: this.model.position.z - this.model.scaling.z / 2,
-                w: 0.1,
-                h: 0.1,
-                d: 0.1
-            }), new Angle ({
-                scene: this.scene,
-                x: this.model.position.x + this.model.scaling.x / 2,
-                y: this.model.position.y - this.model.scaling.y / 2,
-                z: this.model.position.z - this.model.scaling.z / 2,
-                w: 0.1,
-                h: 0.1,
-                d: 0.1
-            }), new Angle ({
-                scene: this.scene,
-                x: this.model.position.x - this.model.scaling.x / 2,
-                y: this.model.position.y + this.model.scaling.y / 2,
-                z: this.model.position.z - this.model.scaling.z / 2,
-                w: 0.1,
-                h: 0.1,
-                d: 0.1
-            }), new Angle ({
-                scene: this.scene,
-                x: this.model.position.x - this.model.scaling.x / 2,
-                y: this.model.position.y - this.model.scaling.y / 2,
-                z: this.model.position.z + this.model.scaling.z / 2,
-                w: 0.1,
-                h: 0.1,
-                d: 0.1
-            }), new Angle ({
-                scene: this.scene,
-                x: this.model.position.x + this.model.scaling.x / 2,
-                y: this.model.position.y + this.model.scaling.y / 2,
-                z: this.model.position.z - this.model.scaling.z / 2,
-                w: 0.1,
-                h: 0.1,
-                d: 0.1
-            }), new Angle ({
-                scene: this.scene,
-                x: this.model.position.x - this.model.scaling.x / 2,
-                y: this.model.position.y + this.model.scaling.y / 2,
-                z: this.model.position.z + this.model.scaling.z / 2,
-                w: 0.1,
-                h: 0.1,
-                d: 0.1
-            }), new Angle ({
-                scene: this.scene,
-                x: this.model.position.x + this.model.scaling.x / 2,
-                y: this.model.position.y - this.model.scaling.y / 2,
-                z: this.model.position.z + this.model.scaling.z / 2,
-                w: 0.1,
-                h: 0.1,
-                d: 0.1
-            }), new Angle ({
-                scene: this.scene,
-                x: this.model.position.x + this.model.scaling.x / 2,
-                y: this.model.position.y + this.model.scaling.y / 2,
-                z: this.model.position.z + this.model.scaling.z / 2,
-                w: 0.1,
-                h: 0.1,
-                d: 0.1
-            })
-        ];
     }
 
-    move (targetPoint, delta) {
-        delta = delta || 1;
-
-        for (var axis in targetPoint) {
-            var diff = this.angles[0].model.position[axis] - targetPoint[axis];
+    move (targetPoint, delta=1) {
+        for (let axis in targetPoint) {
+            let diff = this.angles[0].model.position[axis] - targetPoint[axis];
             this.model.position[axis] -= delta * diff;
-            for (var i in this.angles) {
+            for (let i in this.angles) {
                 this.angles[i].model.position[axis] -= delta * diff;
             }
 
         }
     }
 
-    isInPoint (point, eps=0.001) {
+    inPoint (point, eps=0.001) {
         return Math.sqrt(
                (this.angles[0].model.position.x - point.x)**2 +
                (this.angles[0].model.position.y - point.y)**2 +
@@ -135,16 +67,16 @@ class Box {
            ) < eps;
     }
 
-    isPlacedInPoint (point, storage) {
+    placedInPoint (point, storage) {
         return point.x + this.model.scaling.x < storage.angles[1].model.position.x &&
                point.y + this.model.scaling.y < storage.angles[2].model.position.y &&
                point.z + this.model.scaling.z < storage.angles[3].model.position.z;
     }
 
     intersects (box, eps=0.001) {
-        var boundaryPoints = [box.angles[0].model.position, box.angles[7].model.position],
+        let boundaryPoints = [box.angles[0].model.position, box.angles[7].model.position],
             intersects = {};
-            
+
         ['x', 'y', 'z'].forEach((axis, index) => {
             let comparisons = [];
 

@@ -1,11 +1,13 @@
-var BOXES_COUNT = parseInt(prompt('Box count: ', '10')),
+let BOXES_COUNT = parseInt(prompt('Box count: ', '10')),
+	DELTA = 0.25,
+	EPS = 0.001,
 	canvas, engine;
 
 window.onload = () => {
 	canvas = document.getElementById("renderCanvas");
 	engine = new BABYLON.Engine(canvas, true);
 
-	var scene = createScene();
+	let scene = createScene();
 
 	engine.runRenderLoop(() => {
 		scene.render();
