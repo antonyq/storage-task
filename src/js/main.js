@@ -9,54 +9,47 @@ window.onload = () => {
 
 	let scene = createScene();
 
+	setVues();
+
 	engine.runRenderLoop(() => {
 		scene.render();
 	});
-
-	initEventListeners();
 };
 
-function initEventListeners () {
-	window.addEventListener("resize", () => {
-		engine.resize();
-	});
+function setVues () {
+    let app = new Vue({
+        el: '.arrows',
+        data: {
+			up: false,
+			right: false,
+			down: false,
+			left: false
+        },
+		created: function () {
+            window.addEventListener('keydown', (e) => {
+				if (e.keyCode == 37) this.left = true;
+				else if (e.keyCode == 38) this.up = true;
+				else if (e.keyCode == 39) this.right = true;
+				else if (e.keyCode == 40) this.down = true;
+			});
+            window.addEventListener('keyup', (e) => {
+				if (e.keyCode == 37) this.left = false;
+				else if (e.keyCode == 38) this.up = false;
+				else if (e.keyCode == 39) this.right = false;
+				else if (e.keyCode == 40) this.down = false;
+			});
+	    }
+    });
 
-	document.onkeydown = function () {
-		switch (window.event.keyCode) {
-			case 37:
-				$("#left").addClass("highlighted");
-				break;
-			case 38:
-				$("#top").addClass("highlighted");
-				break;
-			case 39:
-				$("#right").addClass("highlighted");
-				break;
-			case 40:
-				$("#bottom").addClass("highlighted");
-				break;
-		}
-	};
-
-	document.onkeyup = function () {
-		switch (window.event.keyCode) {
-			case 37:
-				$("#left").removeClass("highlighted");
-				break;
-			case 38:
-				$("#top").removeClass("highlighted");
-				break;
-			case 39:
-				$("#right").removeClass("highlighted");
-				break;
-			case 40:
-				$("#bottom").removeClass("highlighted");
-				break;
-		}
-	}
-};
-
-function updateStats (storage) {
-	$('.stored-containers-count').html(`${storage.getStoredBoxesCount()}/${storage.boxes.length}`);
-    $('.filled-volume').html(`${parseInt(storage.getStoredVolume() * 100)}%`);
+    let stats = new Vue({
+        el: '.stats',
+		data: {
+			storage: storage
+		},
+        methods: {
+            totalContainers: () => storage.boxes.length,
+			storedContainers: () => storage.getStoredBoxesCount(),
+            filledVoume: () => parseInt(storage.getStoredVolume() * 100)
+        }
+    });
 }

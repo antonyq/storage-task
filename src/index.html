@@ -9,7 +9,7 @@
 	<link href="css/main.css" rel="stylesheet">
 
 
-	<script src="js/libs/jquery.min.js"></script>
+	<script src="js/libs/vue.min.js"></script>
 
 	<script src="js/libs/babylon.2.2.js"></script>
 	<script src="js/libs/cannon.js"></script>
@@ -26,20 +26,20 @@
 	<canvas id="renderCanvas"></canvas>
 
 	<div class="arrows">
-		<div class="arrow vertical" id="top"></div>
-		<div class="arrow horizontal" id="right"></div>
-		<div class="arrow horizontal" id="left"></div>
-		<div class="arrow vertical" id="bottom"></div>
+		<div class="arrow vertical" id="top" v-bind:class="{'highlighted': up}"></div>
+		<div class="arrow horizontal" id="right" v-bind:class="{'highlighted': right}"></div>
+		<div class="arrow horizontal" id="left" v-bind:class="{'highlighted': down}"></div>
+		<div class="arrow vertical" id="bottom" v-bind:class="{'highlighted': left}"></div>
 	</div>
 
 	<table class="stats">
 		<tr>
 			<td>Containers stored: </td>
-			<td class="stored-containers-count"></td>
+			<td class="stored-containers-count">{{storedContainers()}}/{{totalContainers()}}</td>
 		</tr>
 		<tr>
 			<td>Storage filled:</td>
-			<td class="filled-volume"></td>
+			<td class="filled-volume">{{filledVoume()}}%</td>
 		</tr>
 	</table>
 </body>

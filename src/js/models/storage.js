@@ -25,7 +25,7 @@ class Storage extends Box {
         return this.getStoredBoxes().length;
     }
 
-    getMostCoord (axis) {
+    getMostPoint (axis) {
         let axisAngleMap = {'x': 1, 'y': 2, 'z': 3},
             mostPoint = this.angles[0].model.position,
             storedBoxes = this.boxes.filter(box => box.stored);
@@ -36,7 +36,7 @@ class Storage extends Box {
             }
         });
 
-        return mostPoint.position[axis];
+        return mostPoint;
     }
 
     getNextPoint () {

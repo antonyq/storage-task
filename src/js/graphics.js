@@ -2,7 +2,7 @@ function createScene () {
     let scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color3.FromInts(0, 0, 0);
 
-    let storage = new Storage({
+    window['storage'] = new Storage({
         scene: scene,
         x: 1,
         y: 1,
@@ -25,8 +25,6 @@ function createScene () {
 
     let light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
-
-    updateStats(storage);
 
     scene.registerBeforeRender(() => {
         updateModels(storage);
@@ -57,8 +55,6 @@ function updateModels (storage) {
                     }
 
                     highlightCrossedBoxes(storage);
-
-                    updateStats(storage);
                 }
             }
         } else return true;
