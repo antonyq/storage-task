@@ -17,7 +17,7 @@ window.onload = () => {
 };
 
 function setVues () {
-    let app = new Vue({
+    let arrows = new Vue({
         el: '.arrows',
         data: {
 			up: false,

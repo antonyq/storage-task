@@ -27,7 +27,9 @@ function createScene () {
     light.intensity = 0.7;
 
     scene.registerBeforeRender(() => {
-        updateModels(storage);
+        updateModels();
+
+        highlightCrossedBoxes();
 
         // camera.alpha += 0.001;
     });
@@ -35,7 +37,7 @@ function createScene () {
     return scene;
 }
 
-function updateModels (storage) {
+function updateModels () {
     storage.boxes.every((box, index) => {
         if (! box.stored) {
             let targetCoords = storage.getNextPoint();
@@ -53,23 +55,21 @@ function updateModels (storage) {
                     } else if (typeof box.directiveX == 'boolean') {
                         box.directiveX = true;
                     }
-
-                    highlightCrossedBoxes(storage);
                 }
             }
         } else return true;
     });
 }
 
-function highlightCrossedBoxes (storage) {
-    storage.boxes.forEach((box1Temp, index1Temp) => {
-        if (box1Temp.stored) {
-            storage.boxes.forEach((box2Temp, index2Temp) => {
-                if (box2Temp.stored && index1Temp != index2Temp && box1Temp.intersects(box2Temp, 0.1)) {
-                    box1Temp.model.material = new BABYLON.StandardMaterial("texture", scene);
-                    box1Temp.model.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
-                }
-            });
+function highlightCrossedBoxes () {
+    let storedBoxes = storage.getStoredBoxes();
+    for (let i = 0; i < storedBoxes.length; i++) {
+        for (let j = 0; j < storedBoxes.length; j++) {
+            if (i != j && storedBoxes[i].intersects(storedBoxes[j], 0.1)) {
+                console.log('collision');
+                storedBoxes[i].model.material = new BABYLON.StandardMaterial("texture", scene);
+                storedBoxes[i].model.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
+            }
         }
-    });
+    }
 }

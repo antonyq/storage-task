@@ -77,30 +77,33 @@ class Box {
         let boundaryPoints = [box.angles[0].model.position, box.angles[7].model.position],
             intersects = {};
 
-        ['x', 'y', 'z'].forEach((axis, index) => {
-            let comparisons = [];
-
-            intersects[axis] = false;
+        ['x', 'y', 'z'].forEach((axis) => {
+            let surfacePairs = [
+                [-Infinity, boundaryPoints[0][axis] - eps],
+                [boundaryPoints[0][axis] + eps, boundaryPoints[1][axis] - eps],
+                [boundaryPoints[1][axis] + eps, Infinity]
+            ];
 
              this.angles.forEach((angle) => {
-                 if (angle.model.position[axis] < boundaryPoints[0][axis] - eps) {
-                     comparisons.push(-1);
-                 } else if (boundaryPoints[0][axis] + eps < angle.model.position[axis] && angle.model.position[axis] < boundaryPoints[1][axis] - eps) {
-                     comparisons.push(0);
-                 } else if (boundaryPoints[1][axis] + eps < angle.model.position[axis]) {
-                     comparisons.push(1);
-                 }
+                surfacePairs.every((surfacePair, index) => {
+                    if (intersects[axis] != undefined) {
+                        if (intersects[axis] == index) {
+                            intersects[axis] ==
+                        } else {
+                            intersects[axis] = true;
+                            return false;
+                        }
+                    } else {
+                        intersects[axis] = index;
+                    }
+
+                    if (surfacePair[0] < angle.model.position[axis] && angle.model.position[axis] < surfacePair[1]) {
+
+                    }
+                });
              });
 
-             for(let i = 0; i < comparisons.length; i++)
-             {
-                 for (let j = 0; j < comparisons.length; j++) {
-                     if (comparisons[i] != comparisons[j]) {
-                         intersects[axis] = true;
-                         break;
-                     }
-                 }
-             }
+             intersects[axis] = false/true;
         });
 
         return intersects['x'] && intersects['y'] && intersects['z'];
