@@ -21,6 +21,10 @@ class Storage extends Box {
         return this.boxes.filter(box => box.stored);
     }
 
+    getNotStoredBoxes () {
+        return this.boxes.filter(box => !box.stored);
+    }
+
     getStoredBoxesCount () {
         return this.getStoredBoxes().length;
     }
@@ -42,9 +46,9 @@ class Storage extends Box {
     getNextPoint () {
         for (let [index, box] of this.boxes.entries()) {
             if (! box.stored) {
-                let xMostPoint = index ? this.boxes[index-1].angles[1].model.position : this.angles[0].model.position, //this.getMostPoint('x')
-                    yMostPoint = this.getLastDirectiveYBox().angles[2].model.position, //this.getMostPoint('y'),
-                    zMostPoint = this.getLastDirectiveXBox().angles[3].model.position; //this.getMostPoint('z')
+                let xMostPoint = this.getMostPoint('x'), //index ? this.boxes[index-1].angles[1].model.position : this.angles[0].model.position
+                    yMostPoint = this.getMostPoint('y'), //this.getLastDirectiveYBox().angles[2].model.position
+                    zMostPoint = this.getMostPoint('z'); //this.getLastDirectiveXBox().angles[3].model.position
 
                 if (box.placedInPoint(xMostPoint, this)) {
                     return xMostPoint;

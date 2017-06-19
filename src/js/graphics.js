@@ -27,48 +27,55 @@ function createScene () {
     light.intensity = 0.7;
 
     scene.registerBeforeRender(() => {
-        updateModels();
+        if (storage.getNotStoredBoxes().length > 0) {
+            updateModels(scene);
+        }
 
-        highlightCrossedBoxes();
-
-        // camera.alpha += 0.001;
+        // camera.alpha += 0.1;
     });
 
     return scene;
 }
 
-function updateModels () {
-    storage.boxes.every((box, index) => {
-        if (! box.stored) {
-            let targetCoords = storage.getNextPoint();
+function updateModels (scene) {
+    let notStoredBoxes = storage.getNotStoredBoxes();
+    notStoredBoxes.every((box, index) => {
+        let targetCoords = storage.getNextPoint();
 
-            if (targetCoords) {
-                if (! box.inPoint(targetCoords)) {
-                   box.move(targetCoords, DELTA);
-                   return false;
-                } else {
-                    box.stored = true;
+        if (targetCoords) {
+            if (! box.inPoint(targetCoords)) {
+               box.move(targetCoords, DELTA);
+               return false;
+            } else {
+                box.stored = true;
 
-                    if (typeof box.directiveY == 'boolean') {
-                        box.directiveX = true;
-                        box.directiveY = true;
-                    } else if (typeof box.directiveX == 'boolean') {
-                        box.directiveX = true;
-                    }
+                highlightCrossedBoxes(scene);
+
+                if (typeof box.directiveY == 'boolean') {
+                    box.directiveX = true;
+                    box.directiveY = true;
+                } else if (typeof box.directiveX == 'boolean') {
+                    box.directiveX = true;
                 }
             }
-        } else return true;
+        }
     });
 }
 
-function highlightCrossedBoxes () {
+function highlightCrossedBoxes (scene) {
     let storedBoxes = storage.getStoredBoxes();
     for (let i = 0; i < storedBoxes.length; i++) {
         for (let j = 0; j < storedBoxes.length; j++) {
-            if (i != j && storedBoxes[i].intersects(storedBoxes[j], 0.1)) {
-                console.log('collision');
+            if (i != j && storedBoxes[i].intersects(storedBoxes[j], 1)) {
+                let color = {
+                    r: Math.random(),
+                    g: Math.random(),
+                    b: Math.random(),
+                };
                 storedBoxes[i].model.material = new BABYLON.StandardMaterial("texture", scene);
-                storedBoxes[i].model.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
+                storedBoxes[i].model.material.diffuseColor = new BABYLON.Color3(color.r, color.g, color.b);
+                storedBoxes[j].model.material = new BABYLON.StandardMaterial("texture", scene);
+                storedBoxes[j].model.material.diffuseColor = new BABYLON.Color3(color.r, color.g, color.b);
             }
         }
     }

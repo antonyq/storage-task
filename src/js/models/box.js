@@ -77,33 +77,26 @@ class Box {
         let boundaryPoints = [box.angles[0].model.position, box.angles[7].model.position],
             intersects = {};
 
+        function isNear(x, y, eps) {
+            return Math.abs(x - y) < eps;
+        }
+
         ['x', 'y', 'z'].forEach((axis) => {
             let surfacePairs = [
-                [-Infinity, boundaryPoints[0][axis] - eps],
-                [boundaryPoints[0][axis] + eps, boundaryPoints[1][axis] - eps],
-                [boundaryPoints[1][axis] + eps, Infinity]
+                [-Infinity, boundaryPoints[0][axis]],
+                [boundaryPoints[0][axis], boundaryPoints[1][axis]],
+                [boundaryPoints[1][axis], Infinity]
             ];
 
-             this.angles.forEach((angle) => {
-                surfacePairs.every((surfacePair, index) => {
-                    if (intersects[axis] != undefined) {
-                        if (intersects[axis] == index) {
-                            intersects[axis] ==
-                        } else {
-                            intersects[axis] = true;
-                            return false;
-                        }
-                    } else {
-                        intersects[axis] = index;
-                    }
-
-                    if (surfacePair[0] < angle.model.position[axis] && angle.model.position[axis] < surfacePair[1]) {
-
-                    }
-                });
-             });
-
-             intersects[axis] = false/true;
+            intersects[axis] = true;
+            surfacePairs.forEach((surfacePair) => {
+                if (this.angles.every((angle) =>
+                    (surfacePair[0] < angle.model.position[axis] || isNear(angle.model.position[axis], surfacePair[0], eps)) &&
+                    (angle.model.position[axis] < surfacePair[1] || isNear(angle.model.position[axis], surfacePair[1], eps))
+                   )) {
+                       intersects[axis] = false;
+                };
+            });
         });
 
         return intersects['x'] && intersects['y'] && intersects['z'];

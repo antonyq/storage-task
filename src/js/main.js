@@ -1,6 +1,6 @@
 let BOXES_COUNT = parseInt(prompt('Box count: ', '10')),
-	DELTA = 0.25,
-	EPS = 0.001,
+	DELTA = 0.5,
+	EPS = 1,
 	canvas, engine;
 
 window.onload = () => {
@@ -27,16 +27,16 @@ function setVues () {
         },
 		created: function () {
             window.addEventListener('keydown', (e) => {
-				if (e.keyCode == 37) this.left = true;
+				if (e.keyCode == 37) this.down = true;
 				else if (e.keyCode == 38) this.up = true;
 				else if (e.keyCode == 39) this.right = true;
-				else if (e.keyCode == 40) this.down = true;
+				else if (e.keyCode == 40) this.left = true;
 			});
             window.addEventListener('keyup', (e) => {
-				if (e.keyCode == 37) this.left = false;
+				if (e.keyCode == 37) this.down = false;
 				else if (e.keyCode == 38) this.up = false;
 				else if (e.keyCode == 39) this.right = false;
-				else if (e.keyCode == 40) this.down = false;
+				else if (e.keyCode == 40) this.left = false;
 			});
 	    }
     });
